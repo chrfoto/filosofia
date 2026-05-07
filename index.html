@@ -1,0 +1,502 @@
+<!DOCTYPE html>
+<html lang="es" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <!-- SEO & Metadatos para GitHub -->
+    <title>Ontología de la Comunicación: El Criterio de Verdad</title>
+    <meta name="description" content="Micro-sitio interactivo sobre la Ontología de la Comunicación y el Criterio de Verdad. Exploración académica de Wittgenstein, Gadamer, Heidegger y Pareyson.">
+    <meta name="author" content="Christofer Alan Porras Flores">
+    <meta name="keywords" content="Ontología, Comunicación, Filosofía, Hermenéutica, Verdad, UMSNH, Letras, Diseño">
+
+    <!-- Open Graph (Facebook/LinkedIn) -->
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="Ontología de la Comunicación: El Criterio de Verdad">
+    <meta property="og:description" content="Una exploración interactiva al concepto de la verdad como encuentro y habitabilidad.">
+    <meta property="og:site_name" content="UMSNH Facultad de Letras">
+
+    <!-- Twitter Cards -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Ontología de la Comunicación: El Criterio de Verdad">
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&family=Playfair+Display:ital,wght@0,700;0,900;1,700&display=swap" rel="stylesheet">
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'cream': '#F9F7F2',
+                        'dark': '#1A1A1A',
+                        'terracotta': '#D35400',
+                    },
+                    fontFamily: {
+                        'serif': ['Playfair Display', 'serif'],
+                        'sans': ['Inter', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <style>
+        body {
+            background-color: #F9F7F2;
+            color: #1A1A1A;
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        /* Swiss Design - Scroll Animations */
+        .reveal {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .reveal.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .line-accent {
+            width: 60px;
+            height: 4px;
+            background-color: #D35400;
+            margin-bottom: 2rem;
+        }
+
+        .border-editorial {
+            border-left: 1px solid #1A1A1A;
+            padding-left: 2rem;
+        }
+
+        .glass-nav {
+            background: rgba(249, 247, 242, 0.9);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(26, 26, 26, 0.1);
+        }
+
+        /* RADIAL INTERACTIVE MAP */
+        .radial-container {
+            position: relative;
+            width: 100%;
+            max-width: 600px;
+            aspect-ratio: 1 / 1;
+            margin: 2rem auto;
+        }
+
+        .center-node {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 35%;
+            height: 35%;
+            background: #D35400;
+            border-radius: 50%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            color: white;
+            text-align: center;
+            padding: 15px;
+            z-index: 10;
+            box-shadow: 0 10px 30px rgba(211, 84, 0, 0.2);
+            transition: all 0.5s ease;
+        }
+
+        .satellite-node {
+            position: absolute;
+            width: 16%;
+            height: 16%;
+            background: white;
+            border: 1px solid rgba(26, 26, 26, 0.1);
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 0.65rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            z-index: 5;
+            text-align: center;
+            padding: 4px;
+        }
+
+        .satellite-node:hover {
+            background: #D35400;
+            color: white;
+            transform: scale(1.1);
+        }
+
+        /* VENN DIAGRAM */
+        .venn-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+            height: 400px;
+            max-width: 500px;
+            margin: 0 auto;
+        }
+
+        .venn-circle {
+            position: absolute;
+            width: 250px;
+            height: 250px;
+            border: 2px solid #D35400;
+            border-radius: 50%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            background: rgba(249, 247, 242, 0.4);
+            transition: all 0.4s ease;
+            padding: 20px;
+            cursor: help;
+        }
+
+        .venn-circle:hover {
+            background: rgba(211, 84, 0, 0.1);
+            z-index: 20;
+            transform: scale(1.05);
+        }
+
+        .circle-idea { transform: translate(-80px, -50px); }
+        .circle-talk { transform: translate(80px, -50px); }
+        .circle-research { transform: translate(0, 70px); }
+
+        /* PRISM SVG */
+        .prism-container {
+            position: relative;
+            width: 100%;
+            max-width: 450px;
+            height: 350px;
+            margin: 0 auto;
+        }
+
+        .ray-out { opacity: 0; transition: opacity 0.5s ease; }
+        .prism-container:hover .ray-out { opacity: 1; }
+        .ray-label { font-size: 9px; text-transform: uppercase; fill: #1A1A1A; opacity: 0; transition: opacity 0.5s ease; font-weight: 600; }
+        .prism-container:hover .ray-label { opacity: 0.7; }
+
+        @media (max-width: 768px) {
+            .hero-title { font-size: 3rem; }
+            .venn-circle { width: 180px; height: 180px; }
+            .circle-idea { transform: translate(-50px, -40px); }
+            .circle-talk { transform: translate(50px, -40px); }
+            .circle-research { transform: translate(0, 50px); }
+        }
+    </style>
+</head>
+<body class="font-sans antialiased">
+
+    <!-- Navegación Fija -->
+    <nav class="fixed top-0 w-full z-50 glass-nav px-6 py-4 flex justify-between items-center" role="navigation">
+        <span class="font-bold uppercase tracking-widest text-[10px]">La Verdad como Encuentro / 2024</span>
+        <div class="hidden lg:flex space-x-6 text-[10px] uppercase tracking-widest font-semibold">
+            <a href="#inicio" class="hover:text-terracotta transition-colors">Inicio</a>
+            <a href="#herramientas" class="hover:text-terracotta transition-colors">Lenguaje</a>
+            <a href="#hermeneutica" class="hover:text-terracotta transition-colors">Silencio</a>
+            <a href="#aletheia" class="hover:text-terracotta transition-colors">Aletheia</a>
+            <a href="#prisma" class="hover:text-terracotta transition-colors">Prisma</a>
+            <a href="#cuerpo" class="hover:text-terracotta transition-colors">Cuerpo</a>
+            <a href="#glosario" class="hover:text-terracotta transition-colors">Glosario</a>
+        </div>
+        <span class="text-[10px] italic">UMSNH Facultad de Letras</span>
+    </nav>
+
+    <main>
+        <!-- Hero Section -->
+        <header id="inicio" class="min-h-screen flex flex-col justify-center px-6 md:px-24 pt-20">
+            <div class="reveal">
+                <p class="text-terracotta font-semibold tracking-widest uppercase text-sm mb-4">Ontología de la Comunicación</p>
+                <h1 class="hero-title font-serif text-6xl md:text-8xl leading-tight mb-8">
+                    La Verdad no se <span class="italic">posee</span>,<br>se <span class="text-terracotta">habita</span>.
+                </h1>
+                <div class="line-accent"></div>
+                <p class="max-w-xl text-lg md:text-xl font-light">
+                    "Hoy no vengo a hablarles de una verdad absoluta que se encuentra en un libro de datos, sino de una verdad que <strong>sucede</strong> cuando nos comunicamos."
+                </p>
+            </div>
+        </header>
+
+        <!-- Bloque 1: Wittgenstein -->
+        <section id="herramientas" class="py-32 px-6 md:px-24 bg-white/50">
+            <div class="max-w-6xl mx-auto grid md:grid-cols-2 gap-16 items-center">
+                <div class="reveal">
+                    <h2 class="font-serif text-4xl mb-6">Bloque 1: El Lenguaje como Herramienta</h2>
+                    <p class="text-terracotta italic mb-6">"La comunicación buena es la comunicación verdadera."</p>
+                    <p class="mb-6 leading-relaxed">
+                        Siguiendo a <strong>Wittgenstein</strong>, vemos el lenguaje como una 'caja de herramientas'. El diseño y la palabra no solo describen el mundo, sino que tienen el poder de construirlo o demolerlo.
+                    </p>
+                    <div class="bg-dark text-cream p-8 rounded-sm">
+                        <h4 class="text-xs uppercase tracking-widest mb-2 opacity-70">Ejemplo Crítico: Campaña Política</h4>
+                        <p class="text-sm font-light italic">
+                            Puedes usar tus herramientas para <strong>empoderar</strong> al ciudadano (construcción) o para confundirlo con <strong>fake news</strong> (demolición). Si tu comunicación anula al otro, destruyes su personalidad.
+                        </p>
+                    </div>
+                </div>
+                <div class="reveal flex justify-center">
+                    <div class="border-2 border-dark/10 p-12 rotate-3 text-center">
+                         <p class="font-serif text-9xl text-dark/5 select-none">W</p>
+                         <p class="text-[10px] uppercase tracking-widest mt-4 font-bold">Herramienta vs Arma</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Bloque 2: Gadamer -->
+        <section id="hermeneutica" class="py-32 px-6 md:px-24 border-y border-dark/5 bg-cream">
+            <div class="max-w-4xl mx-auto text-center reveal">
+                <h2 class="font-serif text-4xl md:text-5xl mb-8">Bloque 2: El Silencio de Gadamer</h2>
+                <p class="text-xl mb-12 leading-relaxed font-light">
+                    Entramos al 'Círculo Hermenéutico'. Para entender, primero hay que saber <strong>callar</strong>. La verdad requiere apertura; si creo que ya lo sé todo, mi horizonte está cerrado.
+                </p>
+                <div class="bg-white p-10 shadow-sm border border-dark/5 text-left mb-12">
+                    <h4 class="text-xs uppercase tracking-widest mb-4 font-bold text-terracotta">Ejemplo Universitario: El Portafolio</h4>
+                    <p class="text-sm italic">
+                        "Si el profesor te da un consejo y tú inmediatamente te defiendes, has matado la posibilidad de la verdad. La verdad requiere el riesgo de que el otro tenga la razón."
+                    </p>
+                </div>
+                <div class="p-12 border-y border-dark/20 inline-block">
+                    <span class="text-terracotta text-3xl font-serif italic">"No vemos el mundo como es, sino como somos."</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- Bloque 3: Aletheia -->
+        <section id="aletheia" class="py-32 px-6 md:px-24 bg-white">
+            <div class="max-w-6xl mx-auto grid md:grid-cols-2 gap-16 items-center">
+                <div class="reveal">
+                    <h2 class="font-serif text-4xl mb-6">Bloque 3: Aletheia</h2>
+                    <h3 class="text-xl mb-6 font-light italic text-terracotta">La Verdad como Desocultamiento</h3>
+                    <p class="mb-6">Para Heidegger, la verdad es un proceso de <strong>Aletheia</strong>. Quitar el velo.</p>
+                    <div class="bg-dark text-white p-6 mb-6">
+                        <p class="text-sm">"En el diseño, la 'verdad' no aparece de golpe; vas quitando capas de bocetos y errores hasta que el concepto finalmente aparece."</p>
+                    </div>
+                </div>
+                <div class="reveal venn-container">
+                    <div class="venn-circle circle-idea"><span class="font-bold text-terracotta">IDEA</span></div>
+                    <div class="venn-circle circle-talk"><span class="font-bold text-terracotta">TALK</span></div>
+                    <div class="venn-circle circle-research"><span class="font-bold text-terracotta">RESEARCH</span></div>
+                    <div class="absolute z-30 font-serif italic text-xs bg-cream px-2">Aletheia</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Ecosistema Radial -->
+        <section id="ecosistema" class="py-20 px-6 md:px-24 bg-dark text-cream">
+            <div class="max-w-6xl mx-auto">
+                <div class="text-center mb-12 reveal">
+                    <h2 class="font-serif text-4xl mb-4">El Ecosistema Conceptual</h2>
+                    <p class="text-terracotta uppercase tracking-widest text-[10px]">Interacción dinámica de la Verdad</p>
+                </div>
+                <div class="reveal radial-container" id="radialMap">
+                    <div class="center-node" id="centerNode">
+                        <span class="uppercase tracking-tighter font-bold text-xl mb-1">Verdad</span>
+                        <p class="text-[9px] opacity-80 leading-tight" id="centerDesc">El encuentro en la comunicación</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Bloque 4: Pareyson y el Prisma -->
+        <section id="prisma" class="py-32 px-6 md:px-24 bg-white">
+            <div class="max-w-6xl mx-auto grid md:grid-cols-2 gap-16 items-center">
+                <div class="reveal flex justify-center order-2 md:order-1">
+                    <div class="prism-container">
+                        <svg viewBox="0 0 200 200" class="prism-svg">
+                            <polygon points="100,40 160,150 40,150" fill="none" stroke="#D35400" stroke-width="2" />
+                            <line x1="0" y1="110" x2="80" y2="100" stroke="#1A1A1A" stroke-width="2" />
+                            <line x1="120" y1="95" x2="200" y2="70" class="ray-out" stroke="#ff4d4d" stroke-width="2" />
+                            <text x="150" y="60" class="ray-label">Historia</text>
+                            <line x1="120" y1="100" x2="200" y2="100" class="ray-out" stroke="#ffa64d" stroke-width="2" />
+                            <text x="150" y="95" class="ray-label">Lenguaje</text>
+                            <line x1="120" y1="105" x2="200" y2="130" class="ray-out" stroke="#D35400" stroke-width="2" />
+                            <text x="150" y="145" class="ray-label">Cultura</text>
+                        </svg>
+                    </div>
+                </div>
+                <div class="reveal order-1 md:order-2">
+                    <h2 class="font-serif text-4xl mb-6">El Diamante de Pareyson</h2>
+                    <p class="mb-6 italic">"La verdad es inagotable. Como un diamante, cada vez que lo giras, desocultas un brillo nuevo."</p>
+                    <div class="border-editorial border-dark">
+                        <p class="text-lg">Mi perspectiva no anula la tuya; simplemente vemos caras distintas de la misma piedra preciosa.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Bloque 5: La Verdad Encarnada -->
+        <section id="cuerpo" class="py-32 px-6 md:px-24 bg-cream">
+            <div class="max-w-4xl mx-auto reveal">
+                <h2 class="font-serif text-4xl mb-8">Bloque 4: La Verdad Encarnada</h2>
+                <h3 class="text-xl mb-6 font-light italic">Merleau-Ponty y el Cuerpo</h3>
+                <p class="text-lg mb-12">La verdad no es solo mental, es física. Nuestra verdad está anclada a nuestra biología.</p>
+                <div class="bg-white p-8 border-t-4 border-terracotta shadow-sm">
+                    <h4 class="text-xs uppercase tracking-widest font-bold mb-4">Ejemplo: El Cartel</h4>
+                    <p class="text-sm italic">Un cartel a la altura de los ojos de un adulto no tiene la misma 'verdad' para un niño. La biología cambia la interpretación.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Finalidad -->
+        <section id="finalidad" class="py-32 px-6 md:px-24 bg-white">
+            <div class="max-w-6xl mx-auto">
+                <h2 class="font-serif text-4xl mb-16 text-center reveal">¿Para qué sirve la verdad?</h2>
+                <div class="grid md:grid-cols-2 gap-12">
+                    <div class="reveal border-t border-dark pt-8">
+                        <h3 class="font-serif text-2xl mb-4 italic">Pragmatismo (James)</h3>
+                        <p class="font-light text-dark/70">La verdad como herramienta vital que funciona para orientarnos.</p>
+                    </div>
+                    <div class="reveal border-t border-terracotta pt-8">
+                        <h3 class="font-serif text-2xl mb-4 italic">Eudemonismo (Aristóteles)</h3>
+                        <p class="font-light text-dark/70">La comunicación emancipadora que busca la plenitud humana.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Filtro Ético -->
+        <section id="etica" class="py-32 px-6 md:px-24 bg-dark text-cream">
+            <div class="max-w-4xl mx-auto reveal">
+                <h2 class="font-serif text-4xl md:text-5xl mb-8 text-center text-terracotta">Límites de la Interpretación</h2>
+                <div class="bg-white/5 p-10 border-l-8 border-terracotta mb-8">
+                    <p class="text-xl italic leading-relaxed">
+                        "El dolor no es una interpretación, es una realidad objetiva que exige una respuesta ética inmediata."
+                    </p>
+                </div>
+                <p class="text-center opacity-70 text-sm tracking-[0.3em] uppercase">Recta Conciencia · UMSNH</p>
+            </div>
+        </section>
+
+        <!-- CIERRE VISUAL: GLOSARIO -->
+        <section id="glosario" class="py-40 px-6 md:px-24 bg-white border-t border-dark/5">
+            <div class="max-w-6xl mx-auto">
+                <div class="reveal flex flex-col md:flex-row md:items-end justify-between mb-24">
+                    <div class="max-w-md">
+                        <h2 class="font-serif text-7xl mb-4">Glosario</h2>
+                        <div class="line-accent w-full"></div>
+                    </div>
+                    <p class="text-dark/40 uppercase tracking-[0.4em] text-[10px] font-black pb-2">Síntesis Final</p>
+                </div>
+                
+                <div class="grid md:grid-cols-3 gap-16">
+                    <article class="reveal group">
+                        <span class="text-[10px] font-black text-terracotta mb-4 block tracking-[0.5em]">TERM_01</span>
+                        <h4 class="font-serif text-3xl mb-6 italic group-hover:text-terracotta transition-colors">Aletheia</h4>
+                        <p class="text-sm font-light leading-loose text-dark/60">Quitar el velo a la realidad. El proceso mediante el cual la verdad emerge de su ocultamiento ontológico.</p>
+                    </article>
+                    <article class="reveal group">
+                        <span class="text-[10px] font-black text-terracotta mb-4 block tracking-[0.5em]">TERM_02</span>
+                        <h4 class="font-serif text-3xl mb-6 italic group-hover:text-terracotta transition-colors">Horizonte</h4>
+                        <p class="text-sm font-light leading-loose text-dark/60">El límite de lo que alcanzo a ver con mis prejuicios. Define el marco histórico de nuestra comprensión.</p>
+                    </article>
+                    <article class="reveal group">
+                        <span class="text-[10px] font-black text-terracotta mb-4 block tracking-[0.5em]">TERM_03</span>
+                        <h4 class="font-serif text-3xl mb-6 italic group-hover:text-terracotta transition-colors">Eudemonía</h4>
+                        <p class="text-sm font-light leading-loose text-dark/60">La felicidad plena que nace de habitar en la verdad y actuar conforme a la virtud comunicativa.</p>
+                    </article>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="py-20 px-6 md:px-24 border-t border-dark/10 text-center bg-cream/30">
+        <div class="reveal">
+            <p class="text-[10px] uppercase tracking-widest font-bold mb-4 opacity-40">Exposición: La Verdad como Encuentro</p>
+            <p class="font-serif text-2xl mb-2">Christofer Alan Porras Flores</p>
+            <p class="text-terracotta text-sm mb-12 font-semibold">UMSNH Facultad de Letras</p>
+            <div class="flex justify-center space-x-2">
+                <div class="w-1 h-1 bg-dark rounded-full opacity-10"></div>
+                <div class="w-1 h-1 bg-dark rounded-full opacity-30"></div>
+                <div class="w-1 h-1 bg-dark rounded-full opacity-10"></div>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // Scroll Reveal con Intersection Observer
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('visible');
+                    }
+                });
+            }, { threshold: 0.1 });
+            
+            document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+            // Generación de Nodos en el Mapa Radial
+            const radialMap = document.getElementById('radialMap');
+            const centerNode = document.getElementById('centerNode');
+            const centerTitle = centerNode.querySelector('span');
+            const centerDesc = document.getElementById('centerDesc');
+            
+            const concepts = [
+                { name: "Lenguaje", desc: "La caja de herramientas de Wittgenstein." },
+                { name: "Historia", desc: "El horizonte que define nuestra visión." },
+                { name: "Diálogo", desc: "Donde la verdad sucede como evento." },
+                { name: "Cuerpo", desc: "La verdad encarnada (Merleau-Ponty)." },
+                { name: "Ética", desc: "El límite ante el dolor del otro." },
+                { name: "Aletheia", desc: "El proceso de desocultamiento." },
+                { name: "Silencio", desc: "La apertura para saber escuchar." },
+                { name: "Presencia", desc: "Hablamos con nuestro ser completo." }
+            ];
+
+            concepts.forEach((c, i) => {
+                const angle = (i * (360 / concepts.length)) * (Math.PI / 180);
+                const x = 50 + 42 * Math.cos(angle);
+                const y = 50 + 42 * Math.sin(angle);
+                
+                const node = document.createElement('div');
+                node.className = 'satellite-node';
+                node.style.left = `${x}%`;
+                node.style.top = `${y}%`;
+                node.style.transform = 'translate(-50%, -50%)';
+                node.innerText = c.name;
+                node.setAttribute('aria-label', `Concepto: ${c.name}`);
+                
+                node.addEventListener('mouseenter', () => {
+                    centerTitle.innerText = c.name;
+                    centerDesc.innerText = c.desc;
+                });
+                
+                node.addEventListener('mouseleave', () => {
+                    centerTitle.innerText = "Verdad";
+                    centerDesc.innerText = "El encuentro en la comunicación";
+                });
+                
+                radialMap.appendChild(node);
+            });
+        });
+
+        // Refinamiento de la Navegación en Scroll
+        window.addEventListener('scroll', () => {
+            const nav = document.querySelector('nav');
+            if (window.scrollY > 50) {
+                nav.classList.add('py-2');
+                nav.classList.remove('py-4');
+                nav.style.boxShadow = '0 4px 30px rgba(0, 0, 0, 0.05)';
+            } else {
+                nav.classList.add('py-4');
+                nav.classList.remove('py-2');
+                nav.style.boxShadow = 'none';
+            }
+        });
+    </script>
+</body>
+</html>
